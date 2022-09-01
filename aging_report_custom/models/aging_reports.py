@@ -54,12 +54,12 @@ class ReportAccountAgedPartnerCustom(models.AbstractModel):
             FROM account_move_line
             JOIN account_move move ON account_move_line.move_id = move.id
             LEFT JOIN (
-                select   STRING_AGG (so.name, '-') as so_name , am.id as move_id from sale_order_line_invoice_rel as solir
+                select   so.name as so_name , am.id as move_id from sale_order_line_invoice_rel as solir
                 join sale_order_line as sol on solir.order_line_id = sol.id  
                 join sale_order as so on sol.order_id = so.id 
                 join account_move_line as aml on solir.invoice_line_id = aml.id
                 join account_move as am on aml.move_id = am.id
-                group by am.id
+                group by am.id, so.name
             )as so on move.id = so.move_id 
             JOIN account_journal journal ON journal.id = account_move_line.journal_id
             JOIN account_account account ON account.id = account_move_line.account_id
